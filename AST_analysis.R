@@ -49,7 +49,7 @@ ml_f_ast_df <- mutate_if(ml_f_ast_df, is.character, as.factor)
 
 #calculating number of each isolate of only "R" by isolate and Location:
 f_ast_count <- ml_f_ast_df %>%
-  group_by(Isolate,Location, f_ast_count,Antibiotic_name,Sensitivity_main , .drop = FALSE) %>%
+  group_by(Isolate, Location, LB_DB, Antibiotic_name,Sensitivity_main , .drop = FALSE) %>%
   count()
 View(f_ast_count)
 
@@ -66,14 +66,15 @@ bad_s_percentage_df  <-  f_ast_count %>%
   filter(Sensitivity_main != "S")
 #View(bad_s_percentage_df)
 
-
 ### facet_grid :-
 main_plot <- ggplot(bad_s_percentage_df, aes(fill= LB_DB, x = Antibiotic_name, y = n)) +
   geom_bar(position="dodge",stat = "identity") +
   facet_grid(Location ~ Isolate) + 
   ggtitle("") + ylab("Number of Resistant Isolates") + xlab("Antibiotic Name") +
   theme(axis.text.x = element_text(angle = 90, vjust=0.5),  # rotate x axis text
-        panel.grid.minor = element_blank()) + # turn off minor grid
+        panel.grid.minor = element_blank(),
+        axis.title.y = element_text(margin = margin(r = 8)),
+        axis.title.x = element_text(margin = margin(t = 8))) + # turn off minor grid
   scale_y_continuous(breaks=seq(0, 50, 5)) + 
   scale_fill_discrete(name = "Bird Status")
 
